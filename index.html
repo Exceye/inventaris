@@ -4,18 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Inventaris & Kondisi Barang</title>
-  <!-- Tailwind CSS CDN -->
+  
+  <!-- 1. TAILWIND CSS (Styling Utama) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
+  
+  <!-- 2. FONTAWESOME (Ikon) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Chart.js -->
+  
+  <!-- 3. CHART.JS (Visualisasi Grafik) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- SweetAlert2 -->
+  
+  <!-- 4. SWEETALERT2 (Notifikasi Pop-up) -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- TOP BAR / HEADER -->
+  <!-- HEADER & NAVBAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -24,14 +28,14 @@
         </div>
         <div>
           <h1 class="font-bold text-lg text-slate-900 leading-tight">InventoManager</h1>
-          <p class="text-xs text-slate-500">Sistem Inventaris & Kondisi Barang</p>
+          <p class="text-xs text-slate-500">Sistem Kondisi & Kuantitas Barang</p>
         </div>
       </div>
 
-      <!-- STATUS LOGIN & TOMBOL -->
+      <!-- BADGE STATUS USER & AKSI -->
       <div class="flex items-center space-x-3">
         <div class="hidden sm:flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium" id="statusBadgeContainer">
-          <span class="w-2 h-2 rounded-full bg-slate-400" id="statusDot"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-slate-400" id="statusDot"></span>
           <span id="roleText" class="text-slate-600">Status: GUEST</span>
         </div>
 
@@ -48,12 +52,11 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
+  <!-- KONTEN UTAMA -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
 
-    <!-- BARIS KPI (RINGKASAN STATISTIK) -->
+    <!-- RINGKASAN KPI / STATISTIK -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <!-- Card 1 -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Jenis Barang</p>
@@ -64,7 +67,6 @@
         </div>
       </div>
 
-      <!-- Card 2 -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Kuantitas Stok</p>
@@ -75,7 +77,6 @@
         </div>
       </div>
 
-      <!-- Card 3 -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Barang Rusak</p>
@@ -86,7 +87,6 @@
         </div>
       </div>
 
-      <!-- Card 4 -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Kategori</p>
@@ -98,31 +98,26 @@
       </div>
     </div>
 
-    <!-- VISUALISASI GRAFIK KONDISI BARANG -->
+    <!-- VISUALISASI GRAFIK -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-slate-800 text-base">Sebaran Kuantitas Stok per Kategori</h2>
-      </div>
+      <h2 class="font-bold text-slate-800 text-base mb-4">Sebaran Total Stok per Kategori</h2>
       <div class="h-64 relative">
         <canvas id="categoryChart"></canvas>
       </div>
     </div>
 
-    <!-- TOOLBAR BACA & FILTER -->
+    <!-- PENCARIAN & FILTER -->
     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 md:space-y-0 md:flex md:items-center md:justify-between md:space-x-4">
-      
-      <!-- Search & Filter -->
       <div class="flex flex-col sm:flex-row gap-3 flex-1">
         <div class="relative flex-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" id="searchInput" onkeyup="filterData()" placeholder="Cari nama barang atau ID..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+          <input type="text" id="searchInput" onkeyup="filterData()" placeholder="Cari ID atau Nama Barang..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
         </div>
         <select id="categoryFilter" onchange="filterData()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
           <option value="ALL">Semua Kategori</option>
         </select>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex items-center space-x-2">
         <button onclick="loadData()" class="p-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition text-sm" title="Refresh Data">
           <i class="fa-solid fa-rotate-right"></i>
@@ -137,7 +132,7 @@
       </div>
     </div>
 
-    <!-- TABEL DATA BARANG -->
+    <!-- TABEL DATA -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm text-slate-600">
@@ -146,7 +141,7 @@
               <th class="py-3.5 px-4">ID</th>
               <th class="py-3.5 px-4">Nama Barang</th>
               <th class="py-3.5 px-4">Kategori</th>
-              <th class="py-3.5 px-4 font-bold text-slate-700">Total Stok</th>
+              <th class="py-3.5 px-4 font-bold text-slate-800">Total Stok</th>
               <th class="py-3.5 px-4 text-emerald-600">Bagus</th>
               <th class="py-3.5 px-4 text-amber-600">Masih Layak</th>
               <th class="py-3.5 px-4 text-rose-600">Rusak</th>
@@ -154,7 +149,7 @@
             </tr>
           </thead>
           <tbody id="dataTable" class="divide-y divide-slate-100">
-            <!-- Data dimasukkan via Javascript -->
+            <!-- Data dimasukkan oleh JS -->
           </tbody>
         </table>
       </div>
@@ -162,11 +157,11 @@
 
   </main>
 
-  <!-- MODAL LOGIN -->
+  <!-- MODAL FORM LOGIN -->
   <div id="loginModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="text-lg font-bold text-slate-800">Log In Sistem</h3>
+        <h3 class="text-lg font-bold text-slate-800">Login Sistem</h3>
         <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
@@ -183,11 +178,11 @@
     </div>
   </div>
 
-  <!-- MODAL FORM BARANG (TAMBAH / EDIT) -->
+  <!-- MODAL FORM TAMBAH / EDIT BARANG -->
   <div id="itemModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 id="itemModalTitle" class="text-lg font-bold text-slate-800">Tambah Barang Baru</h3>
+        <h3 id="itemModalTitle" class="text-lg font-bold text-slate-800">Tambah Barang</h3>
         <button onclick="closeItemModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form id="itemForm" onsubmit="handleSaveItem(event)" class="space-y-4">
@@ -198,30 +193,28 @@
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori</label>
-          <input type="text" id="formKategori" required placeholder="Contoh: Elektronik, Mebel" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+          <input type="text" id="formKategori" required placeholder="Misal: Elektronik, Mebel" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
         </div>
         
-        <!-- Kondisi Rincian Barang -->
+        <!-- INPUT KONDISI BARANG -->
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
-          <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rincian Kondisi Barang</p>
-          
+          <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Kondisi Barang</p>
           <div class="grid grid-cols-3 gap-2">
             <div>
               <label class="block text-xs font-semibold text-emerald-600 mb-1">Bagus</label>
-              <input type="number" id="formBagus" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+              <input type="number" id="formBagus" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none">
             </div>
             <div>
               <label class="block text-xs font-semibold text-amber-600 mb-1">Masih Layak</label>
-              <input type="number" id="formMasihLayak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20">
+              <input type="number" id="formMasihLayak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none">
             </div>
             <div>
               <label class="block text-xs font-semibold text-rose-600 mb-1">Rusak</label>
-              <input type="number" id="formRusak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+              <input type="number" id="formRusak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none">
             </div>
           </div>
-
           <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-xs">
-            <span class="font-medium text-slate-500">Estimasi Total Stok:</span>
+            <span class="font-medium text-slate-500">Total Stok Otomatis:</span>
             <span id="previewTotalStok" class="font-bold text-sm text-slate-800">0</span>
           </div>
         </div>
@@ -231,24 +224,23 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT APP -->
+  <!-- JAVASCRIPT FRONTEND LOGIC -->
   <script>
-    // ==========================================
-    // DEKLARASI KONFIGURASI URL APPS SCRIPT
-    // ==========================================
-    const GAS_API_URL = "PASANG_URL_GOOGLE_APPS_SCRIPT_DI_SINI";
+    // ========================================================
+    // KONFIGURASI URL GOOGLE APPS SCRIPT (WEB APP URL)
+    // ========================================================
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzTVxZwiIA-1IVRSvoaMQ5qwDnRyx9_TVAopgu8Ow8EO0LbmY5Nj8Qjs3hvw8TAzGaLZQ/exec";
 
     let rawData = [];
     let currentUser = JSON.parse(sessionStorage.getItem('user')) || { role: 'GUEST' };
     let categoryChartInstance = null;
 
-    // --- INITIALIZATION ---
     document.addEventListener("DOMContentLoaded", () => {
       renderUserRoleUI();
       loadData();
     });
 
-    // --- UI ROLE RENDERER ---
+    // --- LOGIKA AKSES HAK USER ---
     function renderUserRoleUI() {
       const statusDot = document.getElementById('statusDot');
       const roleText = document.getElementById('roleText');
@@ -258,21 +250,21 @@
       const thAksi = document.getElementById('thAksi');
 
       if (currentUser.role === 'ADMIN') {
-        statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
+        statusDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
         roleText.innerText = `Status: ADMIN (${currentUser.username})`;
         btnLogin.classList.add('hidden');
         btnLogout.classList.remove('hidden');
         btnTambahBarang.classList.remove('hidden');
         thAksi.classList.remove('hidden');
       } else if (currentUser.role === 'PETUGAS') {
-        statusDot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
         roleText.innerText = `Status: PETUGAS (${currentUser.username})`;
         btnLogin.classList.add('hidden');
         btnLogout.classList.remove('hidden');
         btnTambahBarang.classList.remove('hidden');
         thAksi.classList.remove('hidden');
       } else {
-        statusDot.className = "w-2 h-2 rounded-full bg-slate-400";
+        statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-400";
         roleText.innerText = "Status: GUEST";
         btnLogin.classList.remove('hidden');
         btnLogout.classList.add('hidden');
@@ -281,7 +273,7 @@
       }
     }
 
-    // --- API CALLER HELPER ---
+    // --- INTERAKSI API ---
     async function apiCall(payload) {
       Swal.showLoading();
       try {
@@ -294,16 +286,15 @@
         return result;
       } catch (err) {
         Swal.close();
-        Swal.fire('Terjadi Kesalahan', 'Gagal terhubung ke Google Apps Script API.', 'error');
+        Swal.fire('Terjadi Kesalahan', 'Gagal memuat data dari Apps Script.', 'error');
         console.error(err);
         return { success: false };
       }
     }
 
-    // --- FETCH & LOAD DATA ---
     async function loadData() {
       if (GAS_API_URL.includes("PASANG_URL")) {
-        Swal.fire('Konfigurasi Diperlukan', 'Silakan masukkan URL Web App Google Apps Script pada variabel GAS_API_URL.', 'warning');
+        Swal.fire('Konfigurasi URL', 'Silakan isi variabel GAS_API_URL di script HTML terlebih dahulu.', 'warning');
         return;
       }
 
@@ -315,7 +306,6 @@
       }
     }
 
-    // --- CALCULATE PREVIEW STOK IN FORM ---
     function calcTotalStok() {
       const b = Number(document.getElementById('formBagus').value || 0);
       const l = Number(document.getElementById('formMasihLayak').value || 0);
@@ -323,14 +313,13 @@
       document.getElementById('previewTotalStok').innerText = b + l + r;
     }
 
-    // --- RENDER TABLE & DASHBOARD ---
+    // --- RENDER DASHBOARD & TABEL ---
     function renderDashboard(data) {
-      // 1. Render Table
       const tbody = document.getElementById('dataTable');
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 font-medium">Tidak ada data ditemukan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 font-medium">Data tidak ditemukan.</td></tr>`;
       } else {
         data.forEach(item => {
           let actionButtons = '';
@@ -357,7 +346,7 @@
         });
       }
 
-      // 2. Render KPI Metrics
+      // Update KPI
       document.getElementById('kpiTotalJenis').innerText = rawData.length;
       document.getElementById('kpiTotalStok').innerText = rawData.reduce((acc, curr) => acc + Number(curr.stok), 0);
       document.getElementById('kpiTotalRusak').innerText = rawData.reduce((acc, curr) => acc + Number(curr.rusak), 0);
@@ -365,11 +354,10 @@
       const categories = [...new Set(rawData.map(i => i.kategori))];
       document.getElementById('kpiTotalKategori').innerText = categories.length;
 
-      // 3. Render Chart
       renderChart(categories);
     }
 
-    // --- CHART.JS RENDERER ---
+    // --- CHART.JS ---
     function renderChart(categories) {
       const ctx = document.getElementById('categoryChart').getContext('2d');
       const catCounts = categories.map(cat => {
@@ -385,7 +373,7 @@
         data: {
           labels: categories,
           datasets: [{
-            label: 'Total Kuantitas Stok',
+            label: 'Total Stok',
             data: catCounts,
             backgroundColor: 'rgba(37, 99, 235, 0.85)',
             borderColor: 'rgba(37, 99, 235, 1)',
@@ -404,7 +392,7 @@
       });
     }
 
-    // --- FILTER & SEARCH ---
+    // --- FILTER & PENCARIAN ---
     function populateCategoryFilter() {
       const filterSelect = document.getElementById('categoryFilter');
       const categories = [...new Set(rawData.map(i => i.kategori))];
@@ -427,7 +415,7 @@
       renderDashboard(filtered);
     }
 
-    // --- AUTHENTICATION MODAL & ACTIONS ---
+    // --- AUTENTIKASI ---
     function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
     function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
 
@@ -444,7 +432,7 @@
         document.getElementById('loginForm').reset();
         renderUserRoleUI();
         loadData();
-        Swal.fire({ icon: 'success', title: 'Berhasil Login', text: `Selamat datang, ${currentUser.username}!`, timer: 1500, showConfirmButton: false });
+        Swal.fire({ icon: 'success', title: 'Login Berhasil', text: `Selamat datang, ${currentUser.username}!`, timer: 1500, showConfirmButton: false });
       } else {
         Swal.fire('Gagal Login', res.message, 'error');
       }
@@ -458,7 +446,7 @@
       Swal.fire({ icon: 'info', title: 'Logged Out', text: 'Anda sekarang berada dalam mode Guest.', timer: 1500, showConfirmButton: false });
     }
 
-    // --- CRUD MODAL & ACTIONS ---
+    // --- AKSI MODAL (TAMBAH / EDIT / HAPUS) ---
     function openAddModal() {
       document.getElementById('formId').value = '';
       document.getElementById('formNamaBarang').value = '';
@@ -532,7 +520,7 @@
       }
     }
 
-    // --- EKSPOR DATA CSV ---
+    // --- EKSPOR CSV ---
     function exportCSV() {
       if (rawData.length === 0) {
         Swal.fire('Info', 'Tidak ada data untuk diekspor.', 'info');
