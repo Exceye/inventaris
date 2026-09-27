@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Inventaris Gudang</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistem Inventaris Gudang</h1>
+            <p>Manajemen stok barang yang mudah dan cepat</p>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h2>Tambah Barang Baru</h2>
+                <form id="inventoryForm">
+                    <div class="form-group">
+                        <label for="id">ID Barang</label>
+                        <input type="text" id="id" name="id" required placeholder="Contoh: BRG-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="nama">Nama Barang</label>
+                        <input type="text" id="nama" name="nama" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kategori">Kategori</label>
+                        <select id="kategori" name="kategori" required>
+                            <option value="">Pilih Kategori...</option>
+                            <option value="Elektronik">Elektronik</option>
+                            <option value="Furnitur">Furnitur</option>
+                            <option value="Alat Tulis">Alat Tulis</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="bagus">Kondisi Bagus</label>
+                            <input type="number" id="bagus" name="bagus" required min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="layak">Masih Layak</label>
+                            <input type="number" id="layak" name="layak" required min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="rusak">Rusak</label>
+                            <input type="number" id="rusak" name="rusak" required min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="stok">Total Stok</label>
+                        <input type="number" id="stok" name="stok" readonly title="Dihitung otomatis">
+                    </div>
+
+                    <button type="submit" id="submitBtn">Simpan Data</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <div class="table-header">
+                    <h2>Daftar Inventaris</h2>
+                    <button id="refreshBtn" class="btn-secondary">🔄 Refresh Data</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Bagus</th>
+                                <th>Layak</th>
+                                <th>Rusak</th>
+                                <th>Total Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" class="loading-text">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
