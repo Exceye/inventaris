@@ -1,92 +1,555 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Inventaris Gudang</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Inventaris & Kondisi Barang</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Sistem Inventaris Gudang</h1>
-            <p>Manajemen stok barang yang mudah dan cepat</p>
-        </header>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-        <main>
-            <section class="form-section">
-                <h2>Tambah Barang Baru</h2>
-                <form id="inventoryForm">
-                    <div class="form-group">
-                        <label for="id">ID Barang</label>
-                        <input type="text" id="id" name="id" required placeholder="Contoh: BRG-001">
-                    </div>
-                    <div class="form-group">
-                        <label for="nama">Nama Barang</label>
-                        <input type="text" id="nama" name="nama" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="kategori">Kategori</label>
-                        <select id="kategori" name="kategori" required>
-                            <option value="">Pilih Kategori...</option>
-                            <option value="Elektronik">Elektronik</option>
-                            <option value="Furnitur">Furnitur</option>
-                            <option value="Alat Tulis">Alat Tulis</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label for="bagus">Kondisi Bagus</label>
-                            <input type="number" id="bagus" name="bagus" required min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="layak">Masih Layak</label>
-                            <input type="number" id="layak" name="layak" required min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="rusak">Rusak</label>
-                            <input type="number" id="rusak" name="rusak" required min="0" value="0">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="stok">Total Stok</label>
-                        <input type="number" id="stok" name="stok" readonly title="Dihitung otomatis">
-                    </div>
+  <!-- TOP BAR / HEADER -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md shadow-blue-500/20">
+          <i class="fa-solid fa-boxes-stacked text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-slate-900 leading-tight">InventoManager</h1>
+          <p class="text-xs text-slate-500">Sistem Inventaris & Kondisi Barang</p>
+        </div>
+      </div>
 
-                    <button type="submit" id="submitBtn">Simpan Data</button>
-                </form>
-            </section>
+      <!-- STATUS LOGIN & TOMBOL -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden sm:flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium" id="statusBadgeContainer">
+          <span class="w-2 h-2 rounded-full bg-slate-400" id="statusDot"></span>
+          <span id="roleText" class="text-slate-600">Status: GUEST</span>
+        </div>
 
-            <section class="table-section">
-                <div class="table-header">
-                    <h2>Daftar Inventaris</h2>
-                    <button id="refreshBtn" class="btn-secondary">🔄 Refresh Data</button>
-                </div>
-                <div class="table-responsive">
-                    <table id="inventoryTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nama Barang</th>
-                                <th>Kategori</th>
-                                <th>Bagus</th>
-                                <th>Layak</th>
-                                <th>Rusak</th>
-                                <th>Total Stok</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <tr>
-                                <td colspan="7" class="loading-text">Memuat data...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
+        <button id="btnLogin" onclick="openLoginModal()" class="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md shadow-blue-500/20 active:scale-95">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Log In</span>
+        </button>
+
+        <button id="btnLogout" onclick="logout()" class="hidden inline-flex items-center space-x-2 bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2 rounded-xl text-sm font-semibold transition border border-rose-200 active:scale-95">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+
+    <!-- BARIS KPI (RINGKASAN STATISTIK) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Jenis Barang</p>
+          <h3 class="text-2xl font-bold text-slate-800 mt-1" id="kpiTotalJenis">0</h3>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-box"></i>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Kuantitas Stok</p>
+          <h3 class="text-2xl font-bold text-slate-800 mt-1" id="kpiTotalStok">0</h3>
+        </div>
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-cubes"></i>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Barang Rusak</p>
+          <h3 class="text-2xl font-bold text-rose-600 mt-1" id="kpiTotalRusak">0</h3>
+        </div>
+        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Kategori</p>
+          <h3 class="text-2xl font-bold text-slate-800 mt-1" id="kpiTotalKategori">0</h3>
+        </div>
+        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-tags"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUALISASI GRAFIK KONDISI BARANG -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-bold text-slate-800 text-base">Sebaran Kuantitas Stok per Kategori</h2>
+      </div>
+      <div class="h-64 relative">
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+    <!-- TOOLBAR BACA & FILTER -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 md:space-y-0 md:flex md:items-center md:justify-between md:space-x-4">
+      
+      <!-- Search & Filter -->
+      <div class="flex flex-col sm:flex-row gap-3 flex-1">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="searchInput" onkeyup="filterData()" placeholder="Cari nama barang atau ID..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+        </div>
+        <select id="categoryFilter" onchange="filterData()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+          <option value="ALL">Semua Kategori</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="loadData()" class="p-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition text-sm" title="Refresh Data">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <button onclick="exportCSV()" class="p-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition text-sm" title="Ekspor CSV">
+          <i class="fa-solid fa-file-csv"></i>
+        </button>
+        <button id="btnTambahBarang" onclick="openAddModal()" class="hidden inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md shadow-emerald-500/20 active:scale-95">
+          <i class="fa-solid fa-plus"></i>
+          <span>Tambah Barang</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABEL DATA BARANG -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold text-xs uppercase tracking-wider">
+            <tr>
+              <th class="py-3.5 px-4">ID</th>
+              <th class="py-3.5 px-4">Nama Barang</th>
+              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4 font-bold text-slate-700">Total Stok</th>
+              <th class="py-3.5 px-4 text-emerald-600">Bagus</th>
+              <th class="py-3.5 px-4 text-amber-600">Masih Layak</th>
+              <th class="py-3.5 px-4 text-rose-600">Rusak</th>
+              <th id="thAksi" class="py-3.5 px-4 text-right hidden">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable" class="divide-y divide-slate-100">
+            <!-- Data dimasukkan via Javascript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL LOGIN -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold text-slate-800">Log In Sistem</h3>
+        <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Username</label>
+          <input type="text" id="loginUsername" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+          <input type="password" id="loginPassword" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition">Masuk</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL FORM BARANG (TAMBAH / EDIT) -->
+  <div id="itemModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 id="itemModalTitle" class="text-lg font-bold text-slate-800">Tambah Barang Baru</h3>
+        <button onclick="closeItemModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="itemForm" onsubmit="handleSaveItem(event)" class="space-y-4">
+        <input type="hidden" id="formId">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
+          <input type="text" id="formNamaBarang" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori</label>
+          <input type="text" id="formKategori" required placeholder="Contoh: Elektronik, Mebel" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+        </div>
+        
+        <!-- Kondisi Rincian Barang -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
+          <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rincian Kondisi Barang</p>
+          
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-emerald-600 mb-1">Bagus</label>
+              <input type="number" id="formBagus" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-amber-600 mb-1">Masih Layak</label>
+              <input type="number" id="formMasihLayak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-rose-600 mb-1">Rusak</label>
+              <input type="number" id="formRusak" min="0" value="0" required oninput="calcTotalStok()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-xs">
+            <span class="font-medium text-slate-500">Estimasi Total Stok:</span>
+            <span id="previewTotalStok" class="font-bold text-sm text-slate-800">0</span>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl shadow-md shadow-emerald-500/20 transition">Simpan Data</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP -->
+  <script>
+    // ==========================================
+    // DEKLARASI KONFIGURASI URL APPS SCRIPT
+    // ==========================================
+    const GAS_API_URL = "PASANG_URL_GOOGLE_APPS_SCRIPT_DI_SINI";
+
+    let rawData = [];
+    let currentUser = JSON.parse(sessionStorage.getItem('user')) || { role: 'GUEST' };
+    let categoryChartInstance = null;
+
+    // --- INITIALIZATION ---
+    document.addEventListener("DOMContentLoaded", () => {
+      renderUserRoleUI();
+      loadData();
+    });
+
+    // --- UI ROLE RENDERER ---
+    function renderUserRoleUI() {
+      const statusDot = document.getElementById('statusDot');
+      const roleText = document.getElementById('roleText');
+      const btnLogin = document.getElementById('btnLogin');
+      const btnLogout = document.getElementById('btnLogout');
+      const btnTambahBarang = document.getElementById('btnTambahBarang');
+      const thAksi = document.getElementById('thAksi');
+
+      if (currentUser.role === 'ADMIN') {
+        statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
+        roleText.innerText = `Status: ADMIN (${currentUser.username})`;
+        btnLogin.classList.add('hidden');
+        btnLogout.classList.remove('hidden');
+        btnTambahBarang.classList.remove('hidden');
+        thAksi.classList.remove('hidden');
+      } else if (currentUser.role === 'PETUGAS') {
+        statusDot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        roleText.innerText = `Status: PETUGAS (${currentUser.username})`;
+        btnLogin.classList.add('hidden');
+        btnLogout.classList.remove('hidden');
+        btnTambahBarang.classList.remove('hidden');
+        thAksi.classList.remove('hidden');
+      } else {
+        statusDot.className = "w-2 h-2 rounded-full bg-slate-400";
+        roleText.innerText = "Status: GUEST";
+        btnLogin.classList.remove('hidden');
+        btnLogout.classList.add('hidden');
+        btnTambahBarang.classList.add('hidden');
+        thAksi.classList.add('hidden');
+      }
+    }
+
+    // --- API CALLER HELPER ---
+    async function apiCall(payload) {
+      Swal.showLoading();
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        Swal.close();
+        return result;
+      } catch (err) {
+        Swal.close();
+        Swal.fire('Terjadi Kesalahan', 'Gagal terhubung ke Google Apps Script API.', 'error');
+        console.error(err);
+        return { success: false };
+      }
+    }
+
+    // --- FETCH & LOAD DATA ---
+    async function loadData() {
+      if (GAS_API_URL.includes("PASANG_URL")) {
+        Swal.fire('Konfigurasi Diperlukan', 'Silakan masukkan URL Web App Google Apps Script pada variabel GAS_API_URL.', 'warning');
+        return;
+      }
+
+      const res = await apiCall({ action: 'READ' });
+      if (res.success) {
+        rawData = res.data || [];
+        populateCategoryFilter();
+        filterData();
+      }
+    }
+
+    // --- CALCULATE PREVIEW STOK IN FORM ---
+    function calcTotalStok() {
+      const b = Number(document.getElementById('formBagus').value || 0);
+      const l = Number(document.getElementById('formMasihLayak').value || 0);
+      const r = Number(document.getElementById('formRusak').value || 0);
+      document.getElementById('previewTotalStok').innerText = b + l + r;
+    }
+
+    // --- RENDER TABLE & DASHBOARD ---
+    function renderDashboard(data) {
+      // 1. Render Table
+      const tbody = document.getElementById('dataTable');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 font-medium">Tidak ada data ditemukan.</td></tr>`;
+      } else {
+        data.forEach(item => {
+          let actionButtons = '';
+          if (currentUser.role === 'ADMIN' || currentUser.role === 'PETUGAS') {
+            actionButtons += `<button onclick="openEditModal('${item.id}')" class="text-amber-600 hover:bg-amber-50 p-2 rounded-lg transition mr-1"><i class="fa-solid fa-pen-to-square"></i></button>`;
+          }
+          if (currentUser.role === 'ADMIN') {
+            actionButtons += `<button onclick="deleteItem('${item.id}')" class="text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>`;
+          }
+
+          let tr = `
+            <tr class="hover:bg-slate-50/80 transition border-b border-slate-100">
+              <td class="py-3.5 px-4 font-mono text-xs font-semibold text-slate-500">${item.id}</td>
+              <td class="py-3.5 px-4 font-semibold text-slate-800">${item.namaBarang}</td>
+              <td class="py-3.5 px-4"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-md border border-slate-200 font-medium">${item.kategori}</span></td>
+              <td class="py-3.5 px-4 font-extrabold text-slate-900">${item.stok}</td>
+              <td class="py-3.5 px-4 font-semibold text-emerald-600">${item.bagus}</td>
+              <td class="py-3.5 px-4 font-semibold text-amber-600">${item.masihLayak}</td>
+              <td class="py-3.5 px-4 font-semibold text-rose-600">${item.rusak}</td>
+              ${currentUser.role !== 'GUEST' ? `<td class="py-3.5 px-4 text-right">${actionButtons}</td>` : ''}
+            </tr>
+          `;
+          tbody.innerHTML += tr;
+        });
+      }
+
+      // 2. Render KPI Metrics
+      document.getElementById('kpiTotalJenis').innerText = rawData.length;
+      document.getElementById('kpiTotalStok').innerText = rawData.reduce((acc, curr) => acc + Number(curr.stok), 0);
+      document.getElementById('kpiTotalRusak').innerText = rawData.reduce((acc, curr) => acc + Number(curr.rusak), 0);
+      
+      const categories = [...new Set(rawData.map(i => i.kategori))];
+      document.getElementById('kpiTotalKategori').innerText = categories.length;
+
+      // 3. Render Chart
+      renderChart(categories);
+    }
+
+    // --- CHART.JS RENDERER ---
+    function renderChart(categories) {
+      const ctx = document.getElementById('categoryChart').getContext('2d');
+      const catCounts = categories.map(cat => {
+        return rawData.filter(i => i.kategori === cat).reduce((acc, curr) => acc + Number(curr.stok), 0);
+      });
+
+      if (categoryChartInstance) {
+        categoryChartInstance.destroy();
+      }
+
+      categoryChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: categories,
+          datasets: [{
+            label: 'Total Kuantitas Stok',
+            data: catCounts,
+            backgroundColor: 'rgba(37, 99, 235, 0.85)',
+            borderColor: 'rgba(37, 99, 235, 1)',
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(226, 232, 240, 0.6)' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // --- FILTER & SEARCH ---
+    function populateCategoryFilter() {
+      const filterSelect = document.getElementById('categoryFilter');
+      const categories = [...new Set(rawData.map(i => i.kategori))];
+      filterSelect.innerHTML = `<option value="ALL">Semua Kategori</option>`;
+      categories.forEach(cat => {
+        filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+      });
+    }
+
+    function filterData() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      const catVal = document.getElementById('categoryFilter').value;
+
+      const filtered = rawData.filter(item => {
+        const matchesSearch = item.namaBarang.toLowerCase().includes(searchVal) || item.id.toLowerCase().includes(searchVal);
+        const matchesCat = (catVal === 'ALL') || (item.kategori === catVal);
+        return matchesSearch && matchesCat;
+      });
+
+      renderDashboard(filtered);
+    }
+
+    // --- AUTHENTICATION MODAL & ACTIONS ---
+    function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+    function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const res = await apiCall({ action: 'LOGIN', username, password });
+      if (res.success) {
+        currentUser = res.user;
+        sessionStorage.setItem('user', JSON.stringify(currentUser));
+        closeLoginModal();
+        document.getElementById('loginForm').reset();
+        renderUserRoleUI();
+        loadData();
+        Swal.fire({ icon: 'success', title: 'Berhasil Login', text: `Selamat datang, ${currentUser.username}!`, timer: 1500, showConfirmButton: false });
+      } else {
+        Swal.fire('Gagal Login', res.message, 'error');
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('user');
+      currentUser = { role: 'GUEST' };
+      renderUserRoleUI();
+      loadData();
+      Swal.fire({ icon: 'info', title: 'Logged Out', text: 'Anda sekarang berada dalam mode Guest.', timer: 1500, showConfirmButton: false });
+    }
+
+    // --- CRUD MODAL & ACTIONS ---
+    function openAddModal() {
+      document.getElementById('formId').value = '';
+      document.getElementById('formNamaBarang').value = '';
+      document.getElementById('formKategori').value = '';
+      document.getElementById('formBagus').value = 0;
+      document.getElementById('formMasihLayak').value = 0;
+      document.getElementById('formRusak').value = 0;
+      calcTotalStok();
+      document.getElementById('itemModalTitle').innerText = 'Tambah Barang Baru';
+      document.getElementById('itemModal').classList.remove('hidden');
+    }
+
+    function openEditModal(id) {
+      const item = rawData.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('formId').value = item.id;
+      document.getElementById('formNamaBarang').value = item.namaBarang;
+      document.getElementById('formKategori').value = item.kategori;
+      document.getElementById('formBagus').value = item.bagus;
+      document.getElementById('formMasihLayak').value = item.masihLayak;
+      document.getElementById('formRusak').value = item.rusak;
+      calcTotalStok();
+      document.getElementById('itemModalTitle').innerText = 'Edit Data Barang';
+      document.getElementById('itemModal').classList.remove('hidden');
+    }
+
+    function closeItemModal() { document.getElementById('itemModal').classList.add('hidden'); }
+
+    async function handleSaveItem(e) {
+      e.preventDefault();
+      const id = document.getElementById('formId').value;
+      const namaBarang = document.getElementById('formNamaBarang').value;
+      const kategori = document.getElementById('formKategori').value;
+      const bagus = document.getElementById('formBagus').value;
+      const masihLayak = document.getElementById('formMasihLayak').value;
+      const rusak = document.getElementById('formRusak').value;
+
+      const action = id ? 'UPDATE' : 'CREATE';
+      const payload = { action, role: currentUser.role, id, namaBarang, kategori, bagus, masihLayak, rusak };
+
+      const res = await apiCall(payload);
+      if (res.success) {
+        closeItemModal();
+        loadData();
+        Swal.fire({ icon: 'success', title: 'Berhasil', text: res.message, timer: 1500, showConfirmButton: false });
+      } else {
+        Swal.fire('Gagal', res.message, 'error');
+      }
+    }
+
+    async function deleteItem(id) {
+      const confirm = await Swal.fire({
+        title: 'Hapus Barang?',
+        text: 'Data yang dihapus tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!'
+      });
+
+      if (confirm.isConfirmed) {
+        const res = await apiCall({ action: 'DELETE', role: currentUser.role, id });
+        if (res.success) {
+          loadData();
+          Swal.fire({ icon: 'success', title: 'Terhapus', text: res.message, timer: 1500, showConfirmButton: false });
+        } else {
+          Swal.fire('Gagal', res.message, 'error');
+        }
+      }
+    }
+
+    // --- EKSPOR DATA CSV ---
+    function exportCSV() {
+      if (rawData.length === 0) {
+        Swal.fire('Info', 'Tidak ada data untuk diekspor.', 'info');
+        return;
+      }
+      let csvContent = "data:text/csv;charset=utf-8,ID,Nama Barang,Kategori,Stok,Bagus,Masih Layak,Rusak\n";
+      rawData.forEach(row => {
+        csvContent += `"${row.id}","${row.namaBarang}","${row.kategori}",${row.stok},${row.bagus},${row.masihLayak},${row.rusak}\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Inventaris_Kondisi_Barang_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
 </body>
 </html>
